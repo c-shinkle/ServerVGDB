@@ -1,4 +1,8 @@
-var Video_Game = require('../models/videoGame');
+var Video_Game = require('../models/videoGameModel');
+
+exports.index = function(req, res) {
+    res.send('NOT IMPLEMENTED: Site Home Page');
+};
 
 // Display list of all Video Games.
 exports.video_game_list = function(req, res) {
