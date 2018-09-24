@@ -1,7 +1,15 @@
 var Video_Game = require('../models/videoGameModel');
 
+var async = require('async');
+
 exports.index = function(req, res) {
-    res.send('NOT IMPLEMENTED: Site Home Page');
+    async.parallel({
+      videogame_count: function(callback) {
+        Video_Game.countDocuments({}, callback);
+      }
+    }, function(err, results) {
+      res.render('index', {title: 'Video Game DB Home', error: err, data: results});
+    });
 };
 
 // Display list of all Video Games.
