@@ -10,4 +10,4 @@ var VideoGameSchema = new Schema(
   }
 );
 
-module.export = mongoose.model('Vidoe Game', VideoGameSchema);
+module.export = mongoose.model('VideoGame', VideoGameSchema);

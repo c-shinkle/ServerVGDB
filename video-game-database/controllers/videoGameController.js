@@ -13,8 +13,14 @@ exports.index = function(req, res) {
 };
 
 // Display list of all Video Games.
-exports.video_game_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Video Game list');
+exports.video_game_list = function(req, res, next) {
+  Video_Game.find({}, 'title')
+  //.populate('author')
+  .exec(function (err, list_vgs) {
+    if (err) { return next(err); }
+    //Successful, so render
+    res.render('video_game_list', { title: 'Video Game List', video_game_list: list_vgs });
+  });
 };
 
 // Display detail page for a specific Video Game.

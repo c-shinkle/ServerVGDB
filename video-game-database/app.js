@@ -10,7 +10,13 @@ var catalogRouter = require('./routes/catalog');
 
 var app = express();
 
-//TODO Add code for Mongo after verifying install
+//Set up mongoose connection
+var mongoose = require('mongoose');
+var mongoDB = 'mongodb://cshinkle:Game5bone@ds157762.mlab.com:57762/vgdb';
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

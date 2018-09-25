@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+  
+  ul
+    each vg in video_game_list
+      li 
+        a(href=vg.url) #{vg.title} 
+        //|  (#{book.author.name})
+
+    else
+      li There are no video games.
