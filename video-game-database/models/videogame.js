@@ -1,6 +1,6 @@
-let mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+var Schema = mongoose.Schema;
 
 var VideoGameSchema = new Schema(
   {
@@ -10,4 +10,4 @@ var VideoGameSchema = new Schema(
   }
 );
 
-module.export = mongoose.model('VideoGame', VideoGameSchema);
+module.exports = mongoose.model('VideoGame', VideoGameSchema);

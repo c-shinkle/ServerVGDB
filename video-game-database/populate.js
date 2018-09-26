@@ -1,12 +1,10 @@
 #! /usr/bin/env node
 
-console.log('This script populates some test books, authors, genres and bookinstances to your database. Specified database as argument - e.g.: populatedb mongodb://your_username:your_password@your_dabase_url');
-
 // Get arguments passed on command line
 var userArgs = process.argv.slice(2);
 if (!userArgs[0].startsWith('mongodb://')) {
-    console.log('ERROR: You need to specify a valid mongodb URL as the first argument');
-    return
+  console.log('ERROR: You need to specify a valid mongodb URL as the first argument');
+  return
 }
 
 var async = require('async')
@@ -30,65 +28,106 @@ function videoGameCreate(title, developer, release_date, cb) {
 
   var vg = new VideoGame(video_game_detail);
 
-  vg.save(function (err) {
+  console.log('Trying to save ' + title + '...');
+
+  vg.save(function(err) {
     if (err) {
       cb(err, null);
+    }else {
+      console.log('New Video Game: ' + vg);
+      video_games.push(vg);
+      cb(null, vg);
     }
-    console.log('New Video Game: ' + vg);
-    video_games.push(vg);
-    cb(null, vg);
   });
 };
 
 function createVideoGames() {
   async.parallel([
-    videoGameCreate('Super Mario 64',
-      '1996-09-29',
-      'Nintendo'),
-    videoGameCreate('The Legend of Zelda: Ocarina of Time',
-      '1998-11-23',
-      'Nintendo'),
-    videoGameCreate('Banjo-Kazooie',
-      '1998-06-29',
-      'Rare'),
-    videoGameCreate('The Legend of Zelda: Majora\'s Mask',
-      '2000-10-26',
-      'Nintendo'),
-    videoGameCreate('Super Smash Bros.',
-      '1999-11-19',
-      'Nintendo'),
-    videoGameCreate('Resident Evil 4',
-      '2005-01-11',
-      'Capcom'),
-    videoGameCreate('Halo: Combat Evolved',
-      '2001-11-15',
-      'Bungie'),
-    videoGameCreate('L.A. Noire',
-      '2011-05-17',
-      'Rockstar'),
-    videoGameCreate('Bioshock',
-      '2007-08-21',
-      'Irrational Games'),
-    videoGameCreate('Call of Duty: Modern Warfare 2',
-      '2009-11-10',
-      'Infinity Ward'),
+    function(callback) {
+      videoGameCreate(
+        'Super Mario 64',
+        '1996-09-29',
+        'Nintendo',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'The Legend of Zelda: Ocarina of Time',
+        '1998-11-23',
+        'Nintendo',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'Banjo-Kazooie',
+        '1998-06-29',
+        'Rare',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'The Legend of Zelda: Majora\'s Mask',
+        '2000-10-26',
+        'Nintendo',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'Super Smash Bros.',
+        '1999-11-19',
+        'Nintendo',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'Resident Evil 4',
+        '2005-01-11',
+        'Capcom',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'Halo: Combat Evolved',
+        '2001-11-15',
+        'Bungie',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'L.A. Noire',
+        '2011-05-17',
+        'Rockstar',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'Bioshock',
+        '2007-08-21',
+        'Irrational Games',
+        callback);
+    },
+    function(callback) {
+      videoGameCreate(
+        'Call of Duty: Modern Warfare 2',
+        '2009-11-10',
+        'Infinity Ward',
+        callback);
+    },
   ]);
 };
-
-async.series([
-    createVideoGames
-],
-// Optional callback
-function(err, results) {
+async.series(
+  [createVideoGames],
+  // Optional callback
+  function(err, results) {
     if (err) {
-        console.log('FINAL ERR: '+err);
-    }
-    else {
-        console.log('Video Games: '+ video_games);
+      console.log('FINAL ERR: ' + err);
+    } else {
+      console.log('BOOKInstances: ' + bookinstances);
+
     }
     // All done, disconnect from database
     mongoose.connection.close();
-});
+  });
 
 /*
 var authors = []
