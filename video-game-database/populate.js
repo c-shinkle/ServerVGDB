@@ -1,47 +1,50 @@
 #! /usr/bin/env node
 
-// Get arguments passed on command line
-var userArgs = process.argv.slice(2);
-if (!userArgs[0].startsWith('mongodb://')) {
-  console.log('ERROR: You need to specify a valid mongodb URL as the first argument');
-  return
-}
-
 var async = require('async')
 var VideoGame = require('./models/videogame');
-
 var mongoose = require('mongoose');
-var mongoDB = userArgs[0];
-mongoose.connect(mongoDB);
-mongoose.Promise = global.Promise;
-var db = mongoose.connection;
-mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+var mongoDB = 'mongodb://cshinkle:Game5bone@ds157762.mlab.com:57762/vgdb';
 
 var video_games = [];
 
-function videoGameCreate(title, developer, release_date, cb) {
+console.log(mongoDB);
+
+mongoose.connect(mongoDB, {useNewUrlParser: true}, (err, db) => {
+  if (err) throw err;
+  console.log("Successfully connected");
+  mongoose.Promise = global.Promise;
+  db.on('error',
+    console.error.bind(console, 'MongoDB connection error:'));
+  console.log('Beginning document creation...');
+  createVideoGames(db);
+});
+
+function videoGameCreate(title, release_date, developer, cb) {
   var video_game_detail = {
     title: title,
+    release_date: release_date,
     developer: developer,
-    release_date: release_date
   };
 
   var vg = new VideoGame(video_game_detail);
+  //var vg = connection.model('VideoGame', VideoGame);
 
   console.log('Trying to save ' + title + '...');
 
-  vg.save(function(err) {
+  vg.save(function(err, result) {
     if (err) {
+      console.log('There was an error while saving: ' + title);
       cb(err, null);
-    }else {
-      console.log('New Video Game: ' + vg);
+    } else {
+      console.log(title + ' successfully saved!');
       video_games.push(vg);
-      cb(null, vg);
+      cb(null, result);
     }
   });
 };
 
-function createVideoGames() {
+function createVideoGames(database) {
   async.parallel([
     function(callback) {
       videoGameCreate(
@@ -113,21 +116,18 @@ function createVideoGames() {
         'Infinity Ward',
         callback);
     },
-  ]);
-};
-async.series(
-  [createVideoGames],
-  // Optional callback
+  ],
   function(err, results) {
-    if (err) {
-      console.log('FINAL ERR: ' + err);
+    if(err) {
+      console.error(err);
     } else {
-      console.log('BOOKInstances: ' + bookinstances);
-
+      console.log('No errors in vg creation!');
     }
-    // All done, disconnect from database
-    mongoose.connection.close();
+    console.log('Here are the results:');
+    console.log(results);
+    database.close();
   });
+};
 
 /*
 var authors = []
