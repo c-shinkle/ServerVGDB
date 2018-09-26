@@ -6,8 +6,7 @@ block content
   ul
     each vg in video_game_list
       li 
-        a(href=vg.url) #{vg.title} 
-        //|  (#{book.author.name})
+        a(href=vg.url) #{vg.title}
 
     else
       li There are no video games.
